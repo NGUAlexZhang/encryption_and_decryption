@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean all
 
 CC = g++
 BIN_DIR = ./bin
@@ -26,7 +26,6 @@ TARGET = botan_client
 SRC_FILES = $(shell find $(SRC_DIR) -name '*.cc')
 OBJ_FILES = $(patsubst %.cc, %.o, $(SRC_FILES))
 
-$(info $(SRC_FILES))
 
 all: $(TARGET)
 
