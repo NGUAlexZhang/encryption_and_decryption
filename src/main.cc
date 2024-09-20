@@ -10,7 +10,11 @@
 #include <asymmetric/ras.hpp>
 
 int main() {
-    RSA::generate_key();
+    RSA rsa;
+    auto vecpt = rsa.encrypt_string("Hello motherfucker");
+    std::string str(vecpt.begin(), vecpt.end());
+    std::cerr << str << std::endl;
+    std::cerr << rsa.decrypt_string(vecpt) << std::endl;
     //try {
     //    // Initialize random number generator
     //    Botan::AutoSeeded_RNG rng;

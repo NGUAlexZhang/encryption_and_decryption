@@ -6,6 +6,7 @@
 #include <botan/pubkey.h>
 #include <botan/hex.h>
 #include <botan/pem.h>
+#include <botan/x509_key.h>
 
 #include <asymmetric/ras.hpp>
 #include <filesystem>
@@ -34,12 +35,54 @@ void RSA::generate_key(std::filesystem::path key_pair_path){
         file_writer.close();
 
         file_writer.open(public_key_path);
-        auto public_key_der = public_key.subject_public_key();
-        file_writer << Botan::PEM_Code::encode(public_key_der.data(), public_key_der.size(), "PUBLIC KEY", 64);
+        file_writer << Botan::X509::PEM_encode(public_key);
         file_writer.close();
     }
     catch(const std::exception& e){
         std::cerr << "Exception caught: " << e.what() << std::endl;
         exit(1);
     }
+}
+
+
+std::unique_ptr<Botan::Private_Key> RSA::getPrivateKeyDataSourceStream(const std::filesystem::path& private_key_path){
+    auto private_key_path_str = std::string(private_key_path);
+    Botan::DataSource_Stream in(private_key_path_str);
+    return Botan::PKCS8::load_key(in);
+}
+
+std::unique_ptr<Botan::Public_Key> RSA::getPublicKeyDataSourceStream(const std::filesystem::path& public_key_path){
+    auto public_key_path_str = std::string(public_key_path);
+    Botan::DataSource_Stream in(public_key_path_str);
+    return Botan::X509::load_key(in);
+}
+RSA::RSA(std::filesystem::path private_key_path, std::filesystem::path public_key_path):
+    private_key(getPrivateKeyDataSourceStream(private_key_path)), 
+    public_key(getPublicKeyDataSourceStream(public_key_path)){
+    try{
+        if(!std::filesystem::exists(private_key_path)){
+            throw std::string(private_key_path) + "do not exist";
+        }
+        if(!std::filesystem::exists(public_key_path)){
+            throw std::string(public_key_path) + "do not exist";
+        }
+    }
+    catch(const std::exception& e){
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+        exit(1);
+    }
+}
+
+std::vector<uint8_t> RSA::encrypt_string(std::string plain_text){
+    std::vector<uint8_t> vecpt(plain_text.data(), plain_text.data() + plain_text.length());
+    Botan::AutoSeeded_RNG rng;
+    Botan::PK_Encryptor_EME enc(*(this->public_key), rng, "OAEP(SHA-256)");
+    return enc.encrypt(vecpt, rng);
+}
+
+std::string RSA::decrypt_string(std::vector<uint8_t> vecpt){
+    Botan::AutoSeeded_RNG rng;
+    Botan::PK_Decryptor_EME dec(*(this->private_key), rng, "OAEP(SHA-256)");
+    auto decrypted = dec.decrypt(vecpt.data(), vecpt.size());
+    return std::string(decrypted.begin(), decrypted.end());
 }
