@@ -14,7 +14,7 @@
 
 static auto home_path = Path_Handler::getHomePath();
 namespace RSA{
-    void generate_key(std::filesystem::path key_pair_path = home_path / "./.az_rsa");
+    void generateKey(std::filesystem::path key_pair_path = home_path / "./.az_rsa");
 }
 class RSA_private{
 protected:

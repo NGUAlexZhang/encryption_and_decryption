@@ -6,13 +6,13 @@
 #include <botan/x509_key.h>
 
 #include <filesystem>
-#include <asymmetric/ras.hpp>
+#include <asymmetric/rsa.hpp>
 #include <iostream>
 #include <exception>
 #include <fstream>
 #include <cstdlib>
 namespace RSA{
-    void generate_key(std::filesystem::path key_pair_path){
+    void generateKey(std::filesystem::path key_pair_path){
         try{
             key_pair_path = key_pair_path.lexically_normal();
             if(!std::filesystem::exists(key_pair_path)){

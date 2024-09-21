@@ -7,18 +7,20 @@
 #include <botan/hex.h>
 #include <iostream>
 
-#include <asymmetric/ras.hpp>
+#include <asymmetric/rsa.hpp>
+#include <symmetric/aes.hpp>
 
 int main() {
-    RSA_pub rsa_pub;
-    RSA_private rsa_private;
-    auto enc = rsa_pub.encrypt_string("Hello motherfxxker");
-    std::cerr << enc << std::endl;
-    std::cerr << rsa_private.decrypt_string(enc) << std::endl;
+    //RSA_pub rsa_pub;
+    //RSA_private rsa_private;
+    //auto enc = rsa_pub.encrypt_string("Hello motherfxxker");
+    //std::cerr << enc << std::endl;
+    //std::cerr << rsa_private.decrypt_string(enc) << std::endl;
 
-    auto sign = rsa_private.sign_string("I'm your father");
-    std::cerr << sign << std::endl;
-    std::cerr << rsa_pub.verify_sign("I'm your fathe", sign);
+    //auto sign = rsa_private.sign_string("I'm your father");
+    //std::cerr << sign << std::endl;
+    //std::cerr << rsa_pub.verify_sign("I'm your fathe", sign);
+    AES::generateKey();
     //try {
     //    // Initialize random number generator
     //    Botan::AutoSeeded_RNG rng;
