@@ -95,9 +95,10 @@ std::string RSA::sign_string(const std::string& unsigned_str){
     return std::string(signed_string.begin(), signed_string.end());
 }
 
-bool RSA::verify_sign(const std::string& signed_str){
-    std::vector<uint8_t> str_stream(signed_str.data(), signed_str.data() + signed_str.length());
-    return this->pk_verifier->check_signature(
-        str_stream.data(), str_stream.size()
+bool RSA::verify_sign(const std::string& unsigned_str, std::string& sign){
+    std::vector<uint8_t> sign_stream(sign.data(), sign.data() + sign.length());
+    std::vector<uint8_t> unsigned_str_stream(unsigned_str.data(), unsigned_str.data() + unsigned_str.length());
+    return this->pk_verifier->verify_message(unsigned_str_stream.data(), unsigned_str_stream.size(),
+        sign_stream.data(), sign_stream.size()
     );
 }

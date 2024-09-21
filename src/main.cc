@@ -17,7 +17,7 @@ int main() {
     std::cerr << rsa.decrypt_string(str) << std::endl;
     auto kkk = rsa.sign_string("Hello fucker");
     std::cerr << kkk << std::endl;
-    std::cerr << rsa.verify_sign(kkk);
+    std::cerr << rsa.verify_sign("Hello fucker", kkk);
     //try {
     //    // Initialize random number generator
     //    Botan::AutoSeeded_RNG rng;

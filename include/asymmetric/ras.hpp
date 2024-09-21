@@ -30,7 +30,7 @@ public:
     std::string encrypt_string(const std::string& plain_text);
     std::string decrypt_string(const std::string& cipher_text);
     std::string sign_string(const std::string& unsigned_str);
-    bool verify_sign(const std::string& signed_str);
+    bool verify_sign(const std::string& unsigned_str, std::string& sign);
     
 };
 
