@@ -18,6 +18,7 @@ protected:
     std::unique_ptr<Botan::Private_Key> private_key;
     std::unique_ptr<Botan::Public_Key> public_key;
     std::unique_ptr<Botan::PK_Signer> pk_signer;
+    std::unique_ptr<Botan::PK_Verifier> pk_verifier;
     Botan::AutoSeeded_RNG rng; 
     std::unique_ptr<Botan::Private_Key> getPrivateKeyDataSourceStream(const std::filesystem::path& private_key_path);
     std::unique_ptr<Botan::Public_Key> getPublicKeyDataSourceStream(const std::filesystem::path& public_key_path);
@@ -29,7 +30,7 @@ public:
     std::string encrypt_string(const std::string& plain_text);
     std::string decrypt_string(const std::string& cipher_text);
     std::string sign_string(const std::string& unsigned_str);
-    std::string verify_sign(const std::string& signed_str);
+    bool verify_sign(const std::string& signed_str);
     
 };
 

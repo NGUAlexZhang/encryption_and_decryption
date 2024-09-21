@@ -15,8 +15,9 @@ int main() {
     std::string str(vecpt.begin(), vecpt.end());
     std::cerr << str << std::endl;
     std::cerr << rsa.decrypt_string(str) << std::endl;
-
-    std::cerr << rsa.sign_string("Hello fucker");
+    auto kkk = rsa.sign_string("Hello fucker");
+    std::cerr << kkk << std::endl;
+    std::cerr << rsa.verify_sign(kkk);
     //try {
     //    // Initialize random number generator
     //    Botan::AutoSeeded_RNG rng;

@@ -66,6 +66,7 @@ RSA::RSA(std::filesystem::path private_key_path, std::filesystem::path public_ke
     private_key(getPrivateKeyDataSourceStream(private_key_path)), 
     public_key(getPublicKeyDataSourceStream(public_key_path)){
         pk_signer = std::make_unique<Botan::PK_Signer>(*(this->private_key), this->rng, "EMSA3(SHA-256)");
+        pk_verifier = std::make_unique<Botan::PK_Verifier>(*(this->public_key), "EMSA3(SHA-256)");
 }
 catch(const std::exception& e){
     std::cerr << "rsa.cc 72 Exception caught: " << e.what() << std::endl;
@@ -92,4 +93,11 @@ std::string RSA::sign_string(const std::string& unsigned_str){
         str_stream.data(), str_stream.size(), this->rng
     );
     return std::string(signed_string.begin(), signed_string.end());
+}
+
+bool RSA::verify_sign(const std::string& signed_str){
+    std::vector<uint8_t> str_stream(signed_str.data(), signed_str.data() + signed_str.length());
+    return this->pk_verifier->check_signature(
+        str_stream.data(), str_stream.size()
+    );
 }
