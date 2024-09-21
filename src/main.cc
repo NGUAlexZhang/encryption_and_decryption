@@ -9,6 +9,7 @@
 
 #include <asymmetric/rsa.hpp>
 #include <symmetric/aes.hpp>
+#include <hash/sha.hpp>
 
 int main() {
     //RSA_pub rsa_pub;
@@ -25,6 +26,10 @@ int main() {
     auto cipher = aes.encryptText("1234567");
     std::cerr << cipher << std::endl;
     std::cerr << aes.decryptText(cipher);
+    auto hash_str = HASH::plain2hash("12321", "SHA-256");
+    std::vector<uint8_t> hash_stream(hash_str.begin(), hash_str.end());
+//    std::cerr << Botan::hex_encode(HASH::plain2hash("12321", "SHA-256"));
+    std::cerr << Botan::hex_encode(hash_stream) << std::endl;
     //try {
     //    // Initialize random number generator
     //    Botan::AutoSeeded_RNG rng;
