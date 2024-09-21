@@ -39,50 +39,57 @@ void RSA::generate_key(std::filesystem::path key_pair_path){
         file_writer.close();
     }
     catch(const std::exception& e){
-        std::cerr << "Exception caught: " << e.what() << std::endl;
+        std::cerr << "rsa.cc 42 Exception caught: " << e.what() << std::endl;
         exit(1);
     }
 }
 
 
 std::unique_ptr<Botan::Private_Key> RSA::getPrivateKeyDataSourceStream(const std::filesystem::path& private_key_path){
+    if(!std::filesystem::exists(private_key_path)){
+        throw std::string(private_key_path) + "do not exist";
+    }
     auto private_key_path_str = std::string(private_key_path);
     Botan::DataSource_Stream in(private_key_path_str);
     return Botan::PKCS8::load_key(in);
 }
 
 std::unique_ptr<Botan::Public_Key> RSA::getPublicKeyDataSourceStream(const std::filesystem::path& public_key_path){
+    if(!std::filesystem::exists(public_key_path)){
+        throw std::string(public_key_path) + "do not exist";
+    }
     auto public_key_path_str = std::string(public_key_path);
     Botan::DataSource_Stream in(public_key_path_str);
     return Botan::X509::load_key(in);
 }
-RSA::RSA(std::filesystem::path private_key_path, std::filesystem::path public_key_path):
+RSA::RSA(std::filesystem::path private_key_path, std::filesystem::path public_key_path) try:
     private_key(getPrivateKeyDataSourceStream(private_key_path)), 
     public_key(getPublicKeyDataSourceStream(public_key_path)){
-    try{
-        if(!std::filesystem::exists(private_key_path)){
-            throw std::string(private_key_path) + "do not exist";
-        }
-        if(!std::filesystem::exists(public_key_path)){
-            throw std::string(public_key_path) + "do not exist";
-        }
-    }
-    catch(const std::exception& e){
-        std::cerr << "Exception caught: " << e.what() << std::endl;
-        exit(1);
-    }
+        pk_signer = std::make_unique<Botan::PK_Signer>(*(this->private_key), this->rng, "EMSA3(SHA-256)");
+}
+catch(const std::exception& e){
+    std::cerr << "rsa.cc 72 Exception caught: " << e.what() << std::endl;
+    exit(1);
 }
 
-std::vector<uint8_t> RSA::encrypt_string(std::string plain_text){
+std::string RSA::encrypt_string(const std::string& plain_text){
     std::vector<uint8_t> vecpt(plain_text.data(), plain_text.data() + plain_text.length());
-    Botan::AutoSeeded_RNG rng;
-    Botan::PK_Encryptor_EME enc(*(this->public_key), rng, "OAEP(SHA-256)");
-    return enc.encrypt(vecpt, rng);
+    Botan::PK_Encryptor_EME enc(*(this->public_key), this->rng, "OAEP(SHA-256)");
+    auto encrypted = enc.encrypt(vecpt, this->rng);
+    return std::string(encrypted.begin(), encrypted.end());
 }
 
-std::string RSA::decrypt_string(std::vector<uint8_t> vecpt){
-    Botan::AutoSeeded_RNG rng;
-    Botan::PK_Decryptor_EME dec(*(this->private_key), rng, "OAEP(SHA-256)");
+std::string RSA::decrypt_string(const std::string& cipher_text){
+    Botan::PK_Decryptor_EME dec(*(this->private_key), this->rng, "OAEP(SHA-256)");
+    std::vector<uint8_t> vecpt(cipher_text.data(), cipher_text.data() + cipher_text.length());
     auto decrypted = dec.decrypt(vecpt.data(), vecpt.size());
     return std::string(decrypted.begin(), decrypted.end());
+}
+
+std::string RSA::sign_string(const std::string& unsigned_str){
+    std::vector<uint8_t> str_stream(unsigned_str.data(), unsigned_str.data() + unsigned_str.length());
+    auto signed_string = this->pk_signer->sign_message(
+        str_stream.data(), str_stream.size(), this->rng
+    );
+    return std::string(signed_string.begin(), signed_string.end());
 }
