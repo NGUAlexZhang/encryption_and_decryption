@@ -15,7 +15,7 @@ DEBUG_FLAGS = -g -D _DEBUG -O0
 COMPILE_MODE ?= debug
 LD_MODE ?= dynamic
 ifeq ($(COMPILE_MODE), release)
-	DEBUG_FLAGS = -D -fwhole-program -flto -O2
+	DEBUG_FLAGS = -fwhole-program -flto -O2
 endif
 
 ifeq ($(LD_MODE), static)

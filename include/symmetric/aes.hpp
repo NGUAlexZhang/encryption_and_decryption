@@ -8,9 +8,12 @@
 class AES{
 protected:
     std::unique_ptr<Botan::Cipher_Mode> encrypter;
+    std::unique_ptr<Botan::Cipher_Mode> decrypter;
 public:
     AES(std::filesystem::path key_path = Path_Handler::getHomePath() / ".az_rsa/id_aes");
     static void generateKey(std::filesystem::path key_path = Path_Handler::getHomePath() / ".az_rsa");
+    std::string encryptText(const std::string& unencrypted_str);
+    std::string decryptText(const std::string& cipher_text);
 
 };
 

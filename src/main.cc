@@ -20,7 +20,11 @@ int main() {
     //auto sign = rsa_private.sign_string("I'm your father");
     //std::cerr << sign << std::endl;
     //std::cerr << rsa_pub.verify_sign("I'm your fathe", sign);
-    AES::generateKey();
+//    AES::generateKey();
+    AES aes;
+    auto cipher = aes.encryptText("1234567");
+    std::cerr << cipher << std::endl;
+    std::cerr << aes.decryptText(cipher);
     //try {
     //    // Initialize random number generator
     //    Botan::AutoSeeded_RNG rng;
