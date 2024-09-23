@@ -44,3 +44,9 @@ all: $(TARGET)
 
 clean:
 	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+install:
+	mkdir -p /usr/local/bin && \
+	mkdir -p /usr/local/lib && \
+	cp $(BIN_DIR)/* /usr/local/bin/ &&\
+	cp $(THIRD_LIB_DIR)/* /usr/local/lib
