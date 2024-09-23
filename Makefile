@@ -22,16 +22,17 @@ ifeq ($(LD_MODE), static)
 	LD_MODE += -static
 endif
 
-TARGET = botan_client
+include ./src/cli/Makefile
+TARGET = az_rsa 
 SRC_FILES = $(shell find $(SRC_DIR) -name '*.cc')
 OBJ_FILES = $(patsubst %.cc, %.o, $(SRC_FILES))
 
 
 all: $(TARGET)
 
-$(TARGET): $(OBJ_FILES)
-	@mkdir -p $(BIN_DIR)
-	$(CC) $(patsubst %.o, $(OBJ_DIR)/%.o, $^) -o $(BIN_DIR)/$(TARGET) $(CFLAGS) $(DEBUG_FLAGS) $(LDFLAGS)
+#$(TARGET): $(OBJ_FILES)
+#	@mkdir -p $(BIN_DIR)
+#	$(CC) $(patsubst %.o, $(OBJ_DIR)/%.o, $^) -o $(BIN_DIR)/$(TARGET) $(CFLAGS) $(DEBUG_FLAGS) $(LDFLAGS)
 
 #asymmetric/rsa.o: $(SRC_DIR)/$@.cc
 #	@mkdir -p $(OBJ_DIR)/$(dir $<)

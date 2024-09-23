@@ -11,16 +11,14 @@
 #include <exception>
 #include <fstream>
 #include <cstdlib>
+#include <utils/path_handler.hpp>
 
 
 
 std::unique_ptr<Botan::Private_Key> RSA_private::getPrivateKeyDataSourceStream(const std::filesystem::path& private_key_path){
-    if(!std::filesystem::exists(private_key_path)){
-        throw std::string(private_key_path) + "do not exist";
-    }
-    auto private_key_path_str = std::string(private_key_path);
-    Botan::DataSource_Stream in(private_key_path_str);
-    return Botan::PKCS8::load_key(in);
+    auto private_key_str = Path_Handler::getFileString(private_key_path);
+    //Botan::DataSource_Stream in(private_key_path_str);
+    return Botan::PKCS8::load_key(std::vector<uint8_t>(private_key_str.begin(), private_key_str.end()));
 }
 
 

@@ -15,22 +15,21 @@
 #include <exception>
 #include <fstream>
 #include <cstdlib>
+#include <utils/path_handler.hpp>
 
 
 std::unique_ptr<Botan::Public_Key> RSA_pub::getPublicKeyDataSourceStream(const std::filesystem::path& public_key_path){
-    if(!std::filesystem::exists(public_key_path)){
-        throw std::string(public_key_path) + "do not exist";
-    }
-    auto public_key_path_str = std::string(public_key_path);
-    Botan::DataSource_Stream in(public_key_path_str);
-    return Botan::X509::load_key(in);
+    auto public_key_str = Path_Handler::getFileString(public_key_path);
+    //Botan::DataSource_Stream in(public_key_path_str);
+    return Botan::X509::load_key(std::vector<uint8_t>(public_key_str.begin(), public_key_str.end()));
 }
 RSA_pub::RSA_pub(std::filesystem::path public_key_path) try:
     public_key(getPublicKeyDataSourceStream(public_key_path)){
-        pk_verifier = std::make_unique<Botan::PK_Verifier>(*(this->public_key), "EMSA3(SHA-256)");
+    pk_verifier = std::make_unique<Botan::PK_Verifier>(*(this->public_key), "EMSA3(SHA-256)");
 }
 catch(const std::exception& e){
     std::cerr << "rsa.cc 72 Exception caught: " << e.what() << std::endl;
+    throw e;
     exit(1);
 }
 
