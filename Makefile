@@ -1,4 +1,4 @@
-.PHONY: clean all
+.PHONY: clean all install
 
 CC = g++
 BIN_DIR = ./bin
@@ -23,7 +23,7 @@ ifeq ($(LD_MODE), static)
 endif
 
 include ./src/cli/Makefile
-TARGET = az_rsa 
+TARGET = az-rsa az-sha az-aes
 SRC_FILES = $(shell find $(SRC_DIR) -name '*.cc')
 OBJ_FILES = $(patsubst %.cc, %.o, $(SRC_FILES))
 
@@ -50,3 +50,4 @@ install:
 	mkdir -p /usr/local/lib && \
 	cp $(BIN_DIR)/* /usr/local/bin/ &&\
 	cp $(THIRD_LIB_DIR)/* /usr/local/lib
+
