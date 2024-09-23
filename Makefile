@@ -49,5 +49,5 @@ install:
 	mkdir -p /usr/local/bin && \
 	mkdir -p /usr/local/lib && \
 	cp $(BIN_DIR)/* /usr/local/bin/ &&\
-	cp $(THIRD_LIB_DIR)/* /usr/local/lib
+	cp $(THIRD_LIB_DIR)/* /usr/lib
 
