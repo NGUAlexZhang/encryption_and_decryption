@@ -2,8 +2,11 @@
 
 ## 开发环境
 gcc 13.2.0
+
 GNU Make 4.3
+
 GLIBC 2.39
+
 ubuntu 24.04
 
 ## 编译安装
