@@ -10,6 +10,11 @@ GLIBC 2.39
 ubuntu 24.04
 
 ## 编译安装
+下载源代码:
+``` shell
+git clone https://github.com/NGUAlexZhang/encryption_and_decryption.git
+```
+
 编译:
 ``` shell
 make all
