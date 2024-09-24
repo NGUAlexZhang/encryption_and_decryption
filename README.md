@@ -25,6 +25,11 @@ make all
 make install
 ```
 
+## 使用
+安装后可在命令行运行az-rsa、az-aes、az-sha分别用于非对称加密、对称加密、哈希运算。
+
+可使用 xxx -h 如 az-rsa -h 的指令查看其对应的使用方法。
+
 ## TODO：
 * 交叉编译
 * 更强的操作系统兼容性
