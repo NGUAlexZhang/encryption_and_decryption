@@ -19,7 +19,7 @@ ifeq ($(COMPILE_MODE), release)
 endif
 
 ifeq ($(LD_MODE), static)
-	LD_FLAGS += -static
+	LDFLAGS += -static
 endif
 
 include ./src/cli/Makefile
